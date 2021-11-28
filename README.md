@@ -52,7 +52,7 @@ right: Wong Kar-wai
 ```
 ````
 
-#### Example result
+#### Result
 
 ![simple](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/simple.png)
 
@@ -77,7 +77,7 @@ messageMaxWidth: 40%
 ```
 ````
 
-#### Example result
+#### Result
 
 ![parameters](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/parameters.png)
 
@@ -105,7 +105,7 @@ left: Sion Sono
 ```
 ````
 
-#### Example result
+#### Result
 
 ![parameters2](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/parameters2.png)
 
@@ -130,7 +130,7 @@ delimiter
 ```
 ````
 
-#### Example result
+#### Result
 
 ![delimiter](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/delimiter.png)
 
@@ -159,6 +159,6 @@ right: Wong Kar-wai
 ```
 ````
 
-#### Example result
+#### Result
 
 ![comments](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/comments.png)
