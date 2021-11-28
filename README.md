@@ -162,3 +162,9 @@ right: Wong Kar-wai
 #### Result
 
 ![comments](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/comments.png)
+
+## Say Thanks 🙏
+
+If you like this plugin and would like to support me, you can buy me a coffee!
+
+<a href="https://www.buymeacoffee.com/holubj" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>

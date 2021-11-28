@@ -34,6 +34,20 @@ export class DialogueSettingTab extends PluginSettingTab {
 
 		containerEl.createEl('h2', {text: 'Dialogue Settings'});
 
+		const coffeeEl = containerEl.createEl('div', {
+			attr: {
+				style: "text-align: center; margin-bottom: 10px;"
+			}
+		});
+		const coffeeLinkEl = coffeeEl.createEl('a', {href: "https://www.buymeacoffee.com/holubj"});
+		const coffeeImgEl = coffeeLinkEl.createEl('img', {
+			attr: {
+				src: "https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png",
+				alt: "Buy Me A Coffee",
+				style: "height: 60px; width: 217px;"
+			}
+		});
+
 		new Setting(containerEl)
 			.setName('Default left title')
 			.setDesc('Default value for left title in all dialogues.')
