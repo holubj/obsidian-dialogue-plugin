@@ -83,7 +83,7 @@ messageMaxWidth: 40%
 
 ### Change of parameters during a dialogue
 
-Parameters can be updated during the dialogue (the change is applied to all following messages).
+Parameters can be modified during the dialogue (the change is applied to all following messages).
 
 #### Example code
 
