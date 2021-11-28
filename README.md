@@ -1,68 +1,164 @@
-## Obsidian Sample Plugin
+# Obsidian Dialogue Plugin
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Create dialogues in Markdown.
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+![dialogue](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/dialogue.png)
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+## Parameters
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+Parameters can be set using commands inside the dialogue. All available parameters are listed in the table below.
 
-### First time developing plugins?
+### Available parameters
 
-Quick starting guide for new plugin devs:
+| Parameter          | Description                                                                   | Default Value |
+| ------------------ | ----------------------------------------------------------------------------- | ------------- |
+| `left:`            | Name of the dialogue participant on the left side.                            | none          |
+| `right:`           | Name of the dialogue participant on the right side.                           | none          |
+| `titleMode:`       | Defines if and when to render titles. See available modes in the table below. | `First`       |
+| `messageMaxWidth:` | Defines the max message width in the dialogue.                                | `60%`         |
+| `commentMaxWidth:` | Defines the max comment width in the dialogue.                                | `60%`         |
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+### Title Modes
 
-### Releasing new releases
+| Mode       | Description                                    |
+| ---------- | ---------------------------------------------- |
+| `disabled` | Disable all titles.                            |
+| `first`    | Render each title only on the first occurence. |
+| `all`      | Always render title.                           |
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Examples
 
-### Adding your plugin to the community plugin list
+### Simple usage
 
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+The message in the dialogue must be prefixed with
 
-### How to use
+-   either `<` (message on the left side)
+-   or `>` (message on the right side).
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
+The message must be exactly one paragraph.
 
-### Manually installing the plugin
+#### Example code
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+````
+```dialogue
+left: Ingmar Bergman
+right: Wong Kar-wai
 
-### Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+< Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec tristique nunc, et pharetra sem.
+< Nunc id auctor lectus, feugiat aliquet sem.
 
+> Lorem ipsum dolor sit amet
+> Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem. Nam egestas tristique felis, sed suscipit nunc commodo nec.
+```
+````
 
-### API Documentation
+#### Example result
 
-See https://github.com/obsidianmd/obsidian-api
+![simple](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/simple.png)
+
+### Advanced parameters
+
+All parameters listed in the table above can be used to customize the dialogue.
+
+#### Example code
+
+````
+```dialogue
+left: Ingmar Bergman
+right: Wong Kar-wai
+titleMode: all
+messageMaxWidth: 40%
+
+< Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec tristique nunc, et pharetra sem.
+< Nunc id auctor lectus, feugiat aliquet sem.
+
+> Lorem ipsum dolor sit amet
+> Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem. Nam egestas tristique felis, sed suscipit nunc commodo nec.
+```
+````
+
+#### Example result
+
+![parameters](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/parameters.png)
+
+### Change of parameters during a dialogue
+
+Parameters can be updated during the dialogue (the change is applied to all following messages).
+
+#### Example code
+
+````
+```dialogue
+left: Ingmar Bergman
+right: Wong Kar-wai
+
+< Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec tristique nunc, et pharetra sem.
+< Nunc id auctor lectus, feugiat aliquet sem.
+
+> Lorem ipsum dolor sit amet
+> Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem. Nam egestas tristique felis, sed suscipit nunc commodo nec.
+
+left: Sion Sono
+
+< Nulla condimentum orci quis enim iaculis, ut congue turpis semper. Donec mattis elit vitae risus molestie vestibulum.
+< In laoreet aliquet neque, eget tempus massa congue ut.
+```
+````
+
+#### Example result
+
+![parameters2](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/parameters2.png)
+
+### Dialogue with delimiter
+
+Use the `delimiter` command to add a delimiter into the dialogue.
+
+#### Example code
+
+````
+```dialogue
+left: Ingmar Bergman
+right: Wong Kar-wai
+
+< Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec tristique nunc, et pharetra sem.
+< Nunc id auctor lectus, feugiat aliquet sem.
+
+delimiter
+
+> Lorem ipsum dolor sit amet
+> Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem. Nam egestas tristique felis, sed suscipit nunc commodo nec.
+```
+````
+
+#### Example result
+
+![delimiter](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/delimiter.png)
+
+### Dialogue with comments
+
+Comments can be added into the dialogue with `#` prefix (see example below). The comment must be exactly one paragraph.
+Max width of the comment can be modified with the `commentMaxWidth:` parameter.
+
+#### Example code
+
+````
+```dialogue
+left: Ingmar Bergman
+right: Wong Kar-wai
+
+< Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec tristique nunc, et pharetra sem.
+< Nunc id auctor lectus, feugiat aliquet sem.
+
+# Lorem ipsum dolor sit amet
+
+> Lorem ipsum dolor sit amet
+
+# Vivamus nunc orci, aliquet varius rutrum et, pulvinar vitae nunc. Pellentesque a consequat ipsum.
+
+> Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem. Nam egestas tristique felis, sed suscipit nunc commodo nec.
+```
+````
+
+#### Example result
+
+![comments](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/comments.png)

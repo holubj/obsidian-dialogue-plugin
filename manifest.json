@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-dialogue-plugin",
+	"name": "Dialogue",
 	"version": "1.0.1",
 	"minAppVersion": "0.12.0",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
+	"description": "Create dialogues in Markdown",
+	"author": "Jakub Holub",
+	"authorUrl": "https://github.com/holubj",
 	"isDesktopOnly": false
 }
