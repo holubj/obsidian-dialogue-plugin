@@ -40,7 +40,7 @@ export class DialogueSettingTab extends PluginSettingTab {
 			}
 		});
 		const coffeeLinkEl = coffeeEl.createEl('a', {href: "https://www.buymeacoffee.com/holubj"});
-		const coffeeImgEl = coffeeLinkEl.createEl('img', {
+		coffeeLinkEl.createEl('img', {
 			attr: {
 				src: "https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png",
 				alt: "Buy Me A Coffee",
