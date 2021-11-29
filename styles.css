@@ -48,11 +48,11 @@
 	background-color: var(--background-secondary);
 }
 
-.dialogue-plugin-wrapper .dialogue-plugin-comment {
+.dialogue-plugin-wrapper .dialogue-plugin-comment-wrapper {
 	justify-content: center;
 }
 
-.dialogue-plugin-comment .dialogue-plugin-comment-content {
+.dialogue-plugin-comment .dialogue-plugin-comment {
 	margin: 20px 0;
 	text-align: center;
 }
