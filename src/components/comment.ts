@@ -16,11 +16,11 @@ export class Comment {
 
     renderComment() {
         const commentEl = this.dialogueSettings.parent.createDiv({
-            cls: `${CLASSES.BLOCK_WRAPPER} ${CLASSES.COMMENT}`
+            cls: `${CLASSES.BLOCK_WRAPPER} ${CLASSES.COMMENT_WRAPPER}`
         });
 
         return commentEl.createDiv({
-            cls: CLASSES.COMMENT_CONTENT,
+            cls: CLASSES.COMMENT,
             text: this.content,
             attr: {
                 style: `max-width: ${this.dialogueSettings.commentMaxWidth};`
