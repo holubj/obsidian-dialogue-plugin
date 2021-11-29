@@ -2,25 +2,9 @@ import { CLASSES } from '../constants/classes';
 import { DialogueSettings } from '../dialogue';
 import { DialogueTitleMode } from '../constants/dialogueTitleMode';
 
-export abstract class MESSAGE_OPERATORS {
-    static readonly LEFT = '<';
-    static readonly RIGHT = '>';
-
-    static isValidOperator(operator: string) : boolean {
-        return [this.LEFT, this.RIGHT].includes(operator);
-    }
-}
-
 export abstract class SIDES {
     static readonly LEFT = 'left';
     static readonly RIGHT = 'right';
-
-    static getSideByOperator(operator: string) : MessageSide {
-        if ( operator == MESSAGE_OPERATORS.LEFT )
-            return this.LEFT;
-        else
-            return this.RIGHT;
-    }
 }
 
 export type MessageSide = typeof SIDES.LEFT | typeof SIDES.RIGHT;

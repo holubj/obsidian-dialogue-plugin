@@ -1,7 +1,7 @@
 import { DialoguePluginSettings } from './settings';
 import { DialogueTitleMode } from './constants/dialogueTitleMode';
 import { CLASSES } from './constants/classes';
-import { Message, MESSAGE_OPERATORS, SIDES } from './components/message';
+import { Message, SIDES } from './components/message';
 import { Delimiter } from './components/delimiter';
 import { Comment } from './components/comment';
 
@@ -13,6 +13,8 @@ abstract class KEYWORDS {
     static readonly COMMENT_MAX_WIDTH = 'commentMaxWidth:';
     static readonly DELIMITER = 'delimiter';
     static readonly COMMENT = '#';
+    static readonly MESSAGE_LEFT = '<';
+    static readonly MESSAGE_RIGHT = '>';
 }
 
 export interface DialogueSettings {
@@ -69,17 +71,17 @@ export class DialogueRenderer {
                 this.dialogueSettings.rightTitle = line.substr(KEYWORDS.RIGHT.length).trim();
                 this.dialogueSettings.rightTitleRenderedOnce = false; // reset this flag when a new title is set
             }
-            else if ( line.startsWith(KEYWORDS.MESSAGE_MAX_WIDTH) ) {
-                this.dialogueSettings.messageMaxWidth = line.substr(KEYWORDS.MESSAGE_MAX_WIDTH.length).trim();
-            }
-            else if ( line.startsWith(KEYWORDS.COMMENT_MAX_WIDTH) ) {
-                this.dialogueSettings.commentMaxWidth = line.substr(KEYWORDS.COMMENT_MAX_WIDTH.length).trim();
-            }
             else if ( line.startsWith(KEYWORDS.TITLE_MODE) ) {
                 const modeName = line.substr(KEYWORDS.TITLE_MODE.length).trim().toLowerCase();
                 if ( Object.values(DialogueTitleMode).some(mode => mode == modeName) ) {
                     this.dialogueSettings.titleMode = modeName as DialogueTitleMode;
                 }
+            }
+            else if ( line.startsWith(KEYWORDS.MESSAGE_MAX_WIDTH) ) {
+                this.dialogueSettings.messageMaxWidth = line.substr(KEYWORDS.MESSAGE_MAX_WIDTH.length).trim();
+            }
+            else if ( line.startsWith(KEYWORDS.COMMENT_MAX_WIDTH) ) {
+                this.dialogueSettings.commentMaxWidth = line.substr(KEYWORDS.COMMENT_MAX_WIDTH.length).trim();
             }
             else if ( line.startsWith(KEYWORDS.DELIMITER) ) {
                 new Delimiter(this.dialogueSettings);
@@ -89,13 +91,15 @@ export class DialogueRenderer {
 
                 new Comment(content, this.dialogueSettings);
             }
-            else {
-                const operator = line.substr(0, 1);
-                if ( !MESSAGE_OPERATORS.isValidOperator(operator) ) continue;
+            else if ( line.startsWith(KEYWORDS.MESSAGE_LEFT) ) {
+                const content = line.substr(KEYWORDS.MESSAGE_LEFT.length);
 
-                const content = line.substr(1);
+                new Message(content, SIDES.LEFT, this.dialogueSettings);
+            }
+            else if ( line.startsWith(KEYWORDS.MESSAGE_RIGHT) ) {
+                const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length);
 
-                new Message(content, SIDES.getSideByOperator(operator), this.dialogueSettings);
+                new Message(content, SIDES.RIGHT, this.dialogueSettings);
             }
         }
     }
