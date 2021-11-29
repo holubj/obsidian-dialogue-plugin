@@ -52,7 +52,7 @@
 	justify-content: center;
 }
 
-.dialogue-plugin-comment .dialogue-plugin-comment {
+.dialogue-plugin-comment-wrapper .dialogue-plugin-comment {
 	margin: 20px 0;
 	text-align: center;
 }
