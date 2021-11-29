@@ -87,10 +87,10 @@ export class DialogueSettingTab extends PluginSettingTab {
 			});
 
         new Setting(containerEl)
-            .setName('Default message max width')
-            .setDesc('Default message max width in all dialogues.')
+            .setName('Default max message width')
+            .setDesc('Default max message width in all dialogues.')
             .addText(text =>
-                text.setPlaceholder('Enter default message max width')
+                text.setPlaceholder('Enter default max message width')
                     .setValue(this.plugin.settings.defaultMessageMaxWidth)
                     .onChange(async (value) => {
                         this.plugin.settings.defaultMessageMaxWidth = value;
@@ -98,10 +98,10 @@ export class DialogueSettingTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName('Default comment max width')
-            .setDesc('Default comment max width in all dialogues.')
+            .setName('Default max comment width')
+            .setDesc('Default max comment width in all dialogues.')
             .addText(text =>
-                text.setPlaceholder('Enter default comment max width')
+                text.setPlaceholder('Enter default max comment width')
                     .setValue(this.plugin.settings.defaultCommentMaxWidth)
                     .onChange(async (value) => {
                         this.plugin.settings.defaultCommentMaxWidth = value;
