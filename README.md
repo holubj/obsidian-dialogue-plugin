@@ -14,7 +14,7 @@ Parameters can be set using commands inside the dialogue. All available paramete
 | ------------------ | ----------------------------------------------------------------------------- | ------------- |
 | `left:`            | Name of the dialogue participant on the left side.                            | none          |
 | `right:`           | Name of the dialogue participant on the right side.                           | none          |
-| `titleMode:`       | Defines if and when to render titles. See available modes in the table below. | `First`       |
+| `titleMode:`       | Defines if and when to render titles. See available modes in the table below. | `first`       |
 | `messageMaxWidth:` | Defines the max message width in the dialogue.                                | `60%`         |
 | `commentMaxWidth:` | Defines the max comment width in the dialogue.                                | `60%`         |
 
