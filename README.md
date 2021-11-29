@@ -137,7 +137,7 @@ delimiter
 ### Dialogue with comments
 
 Comments can be added into the dialogue with `#` prefix (see example below). The comment must be exactly one paragraph.
-Max width of the comment can be modified with the `commentMaxWidth:` parameter.
+Max width of the comments can be modified with the `commentMaxWidth:` parameter.
 
 #### Example code
 
