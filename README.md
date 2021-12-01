@@ -169,7 +169,7 @@ Messages have special `data` attributes to allow custom styling.
 
 Each message has:
 
--   `data-participant-id` attribute with a unique numeric id as a value to identify same dialogue participant (in order of appearance, starting from number 1)
+-   `data-participant-id` attribute with a unique numeric id as a value to identify the same dialogue participant (in order of appearance, starting from number 1)
 -   `data-participant-name` attribute with a name of the dialogue participant as a value
 
 These attributes can be used in a **CSS snippet** to apply custom styles to messages based on the message author. See example below.
