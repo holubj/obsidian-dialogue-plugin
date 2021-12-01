@@ -15,6 +15,8 @@ export class Message {
 
     side: MessageSide;
 
+    title: string;
+
     dialogueSettings: DialogueSettings;
 
 	constructor(content: string, side: MessageSide, dialogueSettings: DialogueSettings) {
@@ -22,34 +24,16 @@ export class Message {
         this.side = side;
         this.dialogueSettings = dialogueSettings;
 
+        this.title = this.side == SIDES.LEFT ? this.dialogueSettings.leftTitle : this.dialogueSettings.rightTitle;
+
         this.renderMessage();
 	}
 
     renderMessage() {
         const messageEl = this.createMessageEl();
 
-        if ( this.dialogueSettings.titleMode != DialogueTitleMode.Disabled ) {
-            let renderName = true;
-
-            if ( this.dialogueSettings.titleMode == DialogueTitleMode.First ) {
-                if ( this.side == SIDES.LEFT && !this.dialogueSettings.leftTitleRenderedOnce ) {
-                    this.dialogueSettings.leftTitleRenderedOnce = true;
-                }
-                else if ( this.side == SIDES.RIGHT && !this.dialogueSettings.rightTitleRenderedOnce ){
-                    this.dialogueSettings.rightTitleRenderedOnce = true;
-                }
-                else {
-                    renderName = false;
-                }
-            }
-
-            if ( renderName ) {
-                const name = this.side == SIDES.LEFT ? this.dialogueSettings.leftTitle : this.dialogueSettings.rightTitle;
-
-                if ( name.length > 0 ) {
-                    messageEl.createDiv({cls: CLASSES.MESSAGE_TITLE, text: name});
-                }
-            }
+        if ( this.titleShouldRender() ) {
+            messageEl.createDiv({cls: CLASSES.MESSAGE_TITLE, text: this.title});
         }
 
         messageEl.createDiv({cls: CLASSES.MESSAGE_CONTENT, text: this.content});
@@ -68,5 +52,28 @@ export class Message {
                 style: `max-width: ${this.dialogueSettings.messageMaxWidth};`
             }
         });
+    }
+
+    titleShouldRender(): boolean {
+        if ( this.title.length < 1 ) return false;
+
+        switch ( this.dialogueSettings.titleMode ) {
+            case DialogueTitleMode.Disabled: return false;
+            case DialogueTitleMode.All: return true;
+            case DialogueTitleMode.First: {
+                if ( this.side == SIDES.LEFT && !this.dialogueSettings.leftTitleRenderedOnce ) {
+                    this.dialogueSettings.leftTitleRenderedOnce = true;
+                    return true;
+                }
+                else if ( this.side == SIDES.RIGHT && !this.dialogueSettings.rightTitleRenderedOnce ){
+                    this.dialogueSettings.rightTitleRenderedOnce = true;
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            default: return false;
+        }
     }
 }
