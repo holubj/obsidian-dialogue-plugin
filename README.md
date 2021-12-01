@@ -26,7 +26,7 @@ Parameters can be set using commands inside the dialogue. All available paramete
 | `first`    | Render each title only on the first occurence. |
 | `all`      | Always render title.                           |
 
-## Examples
+## Usage
 
 ### Simple usage
 
@@ -162,6 +162,43 @@ right: Wong Kar-wai
 #### Result
 
 ![comments](https://raw.githubusercontent.com/holubj/obsidian-dialogue-plugin/master/images/comments.png)
+
+## Custom styles for messages
+
+Messages have special `data` attributes to allow custom styling.
+
+Each message has:
+
+-   `data-participant-id` attribute with a unique numeric id as a value to identify specific dialogue participant (in order of appearance, starting from number 1)
+-   `data-participant-name` attribute with a name of the dialogue participant as a value
+
+These attributes can be used in a **CSS snippet** to apply custom styles to messages based on the message author. See example below.
+
+### Styling example
+
+This example sets selected background colors for the first three unique dialogue participants (in order of appearance) and also one specific color for a dialogue participant named `Sion Sono`.
+
+```css
+/* messages from first dialogue participant will have #f00 background color */
+.dialogue-plugin-message[data-participant-id="1"] {
+	background-color: #f00;
+}
+
+/* messages from second dialogue participant will have #0f0 background color */
+.dialogue-plugin-message[data-participant-id="2"] {
+	background-color: #0f0;
+}
+
+/* messages from third dialogue participant will have #00f background color */
+.dialogue-plugin-message[data-participant-id="3"] {
+	background-color: #00f;
+}
+
+/* messages from dialogue participant named 'Sion Sono' will have #f0f background color */
+.dialogue-plugin-message[data-participant-name="Sion Sono"] {
+	background-color: #f0f;
+}
+```
 
 ## Say Thanks 🙏
 
