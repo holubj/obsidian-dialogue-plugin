@@ -49,7 +49,9 @@ export class Message {
         return messageWrapperEl.createDiv({
             cls: CLASSES.MESSAGE,
             attr: {
-                style: `max-width: ${this.dialogueSettings.messageMaxWidth};`
+                style: `max-width: ${this.dialogueSettings.messageMaxWidth};`,
+                'data-participant-name': this.title,
+                'data-participant-id': this.dialogueSettings.participants.get(this.title)
             }
         });
     }

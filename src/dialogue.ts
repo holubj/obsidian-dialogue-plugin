@@ -26,6 +26,7 @@ export interface DialogueSettings {
     commentMaxWidth: string;
     leftTitleRenderedOnce: boolean;
     rightTitleRenderedOnce: boolean;
+    participants: Map<string, number>;
 }
 
 export class DialogueRenderer {
@@ -50,10 +51,17 @@ export class DialogueRenderer {
             commentMaxWidth: settings.defaultCommentMaxWidth,
             leftTitleRenderedOnce: false,
             rightTitleRenderedOnce: false,
+            participants: new Map<string, number>(),
         }
 
         this.renderDialogue();
 	}
+
+    registerParticipant(participant: string) {
+        if ( !this.dialogueSettings.participants.has(participant) ) {
+            this.dialogueSettings.participants.set(participant, this.dialogueSettings.participants.size + 1); // starting from number 1
+        }
+    }
 
     renderDialogue() {
         const lines = this.src
@@ -93,11 +101,13 @@ export class DialogueRenderer {
             }
             else if ( line.startsWith(KEYWORDS.MESSAGE_LEFT) ) {
                 const content = line.substr(KEYWORDS.MESSAGE_LEFT.length);
+                this.registerParticipant(this.dialogueSettings.leftTitle);
 
                 new Message(content, SIDES.LEFT, this.dialogueSettings);
             }
             else if ( line.startsWith(KEYWORDS.MESSAGE_RIGHT) ) {
                 const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length);
+                this.registerParticipant(this.dialogueSettings.rightTitle);
 
                 new Message(content, SIDES.RIGHT, this.dialogueSettings);
             }
