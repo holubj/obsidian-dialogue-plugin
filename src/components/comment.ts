@@ -7,12 +7,12 @@ export class Comment {
 
     dialogueSettings: DialogueSettings;
 
-	constructor(content: string, dialogueSettings: DialogueSettings) {
+    constructor(content: string, dialogueSettings: DialogueSettings) {
         this.content = content;
         this.dialogueSettings = dialogueSettings;
 
         this.renderComment();
-	}
+    }
 
     renderComment() {
         const commentEl = this.dialogueSettings.parent.createDiv({

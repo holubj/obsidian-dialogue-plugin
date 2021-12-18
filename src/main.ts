@@ -11,11 +11,11 @@ export default class DialoguePlugin extends Plugin {
 		await this.loadSettings();
 
 		this.registerMarkdownCodeBlockProcessor(
-            `dialogue`,
-            (src, el, ctx) => {
+			`dialogue`,
+			(src, el, ctx) => {
 				new DialogueRenderer(src, el, this.settings);
 			}
-        );
+		);
 
 		this.addSettingTab(new DialogueSettingTab(this.app, this));
 	}

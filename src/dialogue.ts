@@ -1,5 +1,5 @@
 import { DialoguePluginSettings } from './settings';
-import { DialogueTitleMode } from './constants/dialogueTitleMode';
+import { DialogueTitleMode } from './types/dialogueTitleMode';
 import { CLASSES } from './constants/classes';
 import { Message, SIDES } from './components/message';
 import { Delimiter } from './components/delimiter';
@@ -37,10 +37,10 @@ export class DialogueRenderer {
 
     dialogueSettings: DialogueSettings;
 
-	constructor(src: string, parent: HTMLElement, settings: DialoguePluginSettings) {
-		this.src = src;
+    constructor(src: string, parent: HTMLElement, settings: DialoguePluginSettings) {
+        this.src = src;
 
-        this.dialogueWrapperEl = parent.createDiv({cls: CLASSES.DIALOGUE_WRAPPER});
+        this.dialogueWrapperEl = parent.createDiv({ cls: CLASSES.DIALOGUE_WRAPPER });
 
         this.dialogueSettings = {
             parent: this.dialogueWrapperEl,
@@ -55,10 +55,10 @@ export class DialogueRenderer {
         }
 
         this.renderDialogue();
-	}
+    }
 
     registerParticipant(participant: string) {
-        if ( !this.dialogueSettings.participants.has(participant) ) {
+        if (!this.dialogueSettings.participants.has(participant)) {
             this.dialogueSettings.participants.set(participant, this.dialogueSettings.participants.size + 1); // starting from number 1
         }
     }
@@ -69,43 +69,43 @@ export class DialogueRenderer {
             .map(line => line.trim())
             .filter(line => line.length > 1);
 
-        for ( const line of lines ) {
+        for (const line of lines) {
 
-            if ( line.startsWith(KEYWORDS.LEFT) ) {
+            if (line.startsWith(KEYWORDS.LEFT)) {
                 this.dialogueSettings.leftTitle = line.substr(KEYWORDS.LEFT.length).trim();
                 this.dialogueSettings.leftTitleRenderedOnce = false; // reset this flag when a new title is set
             }
-            else if ( line.startsWith(KEYWORDS.RIGHT) ) {
+            else if (line.startsWith(KEYWORDS.RIGHT)) {
                 this.dialogueSettings.rightTitle = line.substr(KEYWORDS.RIGHT.length).trim();
                 this.dialogueSettings.rightTitleRenderedOnce = false; // reset this flag when a new title is set
             }
-            else if ( line.startsWith(KEYWORDS.TITLE_MODE) ) {
+            else if (line.startsWith(KEYWORDS.TITLE_MODE)) {
                 const modeName = line.substr(KEYWORDS.TITLE_MODE.length).trim().toLowerCase();
-                if ( Object.values(DialogueTitleMode).some(mode => mode == modeName) ) {
+                if (Object.values(DialogueTitleMode).some(mode => mode == modeName)) {
                     this.dialogueSettings.titleMode = modeName as DialogueTitleMode;
                 }
             }
-            else if ( line.startsWith(KEYWORDS.MESSAGE_MAX_WIDTH) ) {
+            else if (line.startsWith(KEYWORDS.MESSAGE_MAX_WIDTH)) {
                 this.dialogueSettings.messageMaxWidth = line.substr(KEYWORDS.MESSAGE_MAX_WIDTH.length).trim();
             }
-            else if ( line.startsWith(KEYWORDS.COMMENT_MAX_WIDTH) ) {
+            else if (line.startsWith(KEYWORDS.COMMENT_MAX_WIDTH)) {
                 this.dialogueSettings.commentMaxWidth = line.substr(KEYWORDS.COMMENT_MAX_WIDTH.length).trim();
             }
-            else if ( line.startsWith(KEYWORDS.DELIMITER) ) {
+            else if (line.startsWith(KEYWORDS.DELIMITER)) {
                 new Delimiter(this.dialogueSettings);
             }
-            else if ( line.startsWith(KEYWORDS.COMMENT) ) {
+            else if (line.startsWith(KEYWORDS.COMMENT)) {
                 const content = line.substr(KEYWORDS.COMMENT.length);
 
                 new Comment(content, this.dialogueSettings);
             }
-            else if ( line.startsWith(KEYWORDS.MESSAGE_LEFT) ) {
+            else if (line.startsWith(KEYWORDS.MESSAGE_LEFT)) {
                 const content = line.substr(KEYWORDS.MESSAGE_LEFT.length);
                 this.registerParticipant(this.dialogueSettings.leftTitle);
 
                 new Message(content, SIDES.LEFT, this.dialogueSettings);
             }
-            else if ( line.startsWith(KEYWORDS.MESSAGE_RIGHT) ) {
+            else if (line.startsWith(KEYWORDS.MESSAGE_RIGHT)) {
                 const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length);
                 this.registerParticipant(this.dialogueSettings.rightTitle);
 

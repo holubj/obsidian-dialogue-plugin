@@ -1,21 +1,21 @@
 import { App, Setting, PluginSettingTab } from 'obsidian';
 import DialoguePlugin from './main';
-import { DialogueTitleMode } from './constants/dialogueTitleMode';
+import { DialogueTitleMode } from './types/dialogueTitleMode';
 
 export interface DialoguePluginSettings {
 	defaultLeftTitle: string;
 	defaultRightTitle: string;
 	defaultTitleMode: DialogueTitleMode;
-    defaultMessageMaxWidth: string;
-    defaultCommentMaxWidth: string;
+	defaultMessageMaxWidth: string;
+	defaultCommentMaxWidth: string;
 }
 
 export const DEFAULT_SETTINGS: DialoguePluginSettings = {
 	defaultLeftTitle: '',
 	defaultRightTitle: '',
 	defaultTitleMode: DialogueTitleMode.First,
-    defaultMessageMaxWidth: '60%',
-    defaultCommentMaxWidth: '60%',
+	defaultMessageMaxWidth: '60%',
+	defaultCommentMaxWidth: '60%',
 }
 
 export class DialogueSettingTab extends PluginSettingTab {
@@ -28,18 +28,18 @@ export class DialogueSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		const {containerEl} = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Dialogue Settings'});
+		containerEl.createEl('h2', { text: 'Dialogue Settings' });
 
 		const coffeeEl = containerEl.createEl('div', {
 			attr: {
 				style: "text-align: center; margin-bottom: 10px;"
 			}
 		});
-		const coffeeLinkEl = coffeeEl.createEl('a', {href: "https://www.buymeacoffee.com/holubj"});
+		const coffeeLinkEl = coffeeEl.createEl('a', { href: "https://www.buymeacoffee.com/holubj" });
 		coffeeLinkEl.createEl('img', {
 			attr: {
 				src: "https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png",
@@ -57,7 +57,7 @@ export class DialogueSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.defaultLeftTitle = value;
 						await this.plugin.saveSettings();
-				}));
+					}));
 
 		new Setting(containerEl)
 			.setName('Default right title')
@@ -68,7 +68,7 @@ export class DialogueSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.defaultRightTitle = value;
 						await this.plugin.saveSettings();
-				}));
+					}));
 
 		new Setting(containerEl)
 			.setName('Default title mode')
@@ -86,26 +86,26 @@ export class DialogueSettingTab extends PluginSettingTab {
 					});
 			});
 
-        new Setting(containerEl)
-            .setName('Default max message width')
-            .setDesc('Default max message width in all dialogues.')
-            .addText(text =>
-                text.setPlaceholder('Enter default max message width')
-                    .setValue(this.plugin.settings.defaultMessageMaxWidth)
-                    .onChange(async (value) => {
-                        this.plugin.settings.defaultMessageMaxWidth = value;
-                        await this.plugin.saveSettings();
-                }));
+		new Setting(containerEl)
+			.setName('Default max message width')
+			.setDesc('Default max message width in all dialogues.')
+			.addText(text =>
+				text.setPlaceholder('Enter default max message width')
+					.setValue(this.plugin.settings.defaultMessageMaxWidth)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultMessageMaxWidth = value;
+						await this.plugin.saveSettings();
+					}));
 
-        new Setting(containerEl)
-            .setName('Default max comment width')
-            .setDesc('Default max comment width in all dialogues.')
-            .addText(text =>
-                text.setPlaceholder('Enter default max comment width')
-                    .setValue(this.plugin.settings.defaultCommentMaxWidth)
-                    .onChange(async (value) => {
-                        this.plugin.settings.defaultCommentMaxWidth = value;
-                        await this.plugin.saveSettings();
-                }));
+		new Setting(containerEl)
+			.setName('Default max comment width')
+			.setDesc('Default max comment width in all dialogues.')
+			.addText(text =>
+				text.setPlaceholder('Enter default max comment width')
+					.setValue(this.plugin.settings.defaultCommentMaxWidth)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultCommentMaxWidth = value;
+						await this.plugin.saveSettings();
+					}));
 	}
 }

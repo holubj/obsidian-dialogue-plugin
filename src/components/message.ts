@@ -1,6 +1,6 @@
 import { CLASSES } from '../constants/classes';
 import { DialogueSettings } from '../dialogue';
-import { DialogueTitleMode } from '../constants/dialogueTitleMode';
+import { DialogueTitleMode } from '../types/dialogueTitleMode';
 
 export abstract class SIDES {
     static readonly LEFT = 'left';
@@ -19,7 +19,7 @@ export class Message {
 
     dialogueSettings: DialogueSettings;
 
-	constructor(content: string, side: MessageSide, dialogueSettings: DialogueSettings) {
+    constructor(content: string, side: MessageSide, dialogueSettings: DialogueSettings) {
         this.content = content;
         this.side = side;
         this.dialogueSettings = dialogueSettings;
@@ -27,20 +27,19 @@ export class Message {
         this.title = this.side == SIDES.LEFT ? this.dialogueSettings.leftTitle : this.dialogueSettings.rightTitle;
 
         this.renderMessage();
-	}
+    }
 
     renderMessage() {
         const messageEl = this.createMessageEl();
 
-        if ( this.titleShouldRender() ) {
-            messageEl.createDiv({cls: CLASSES.MESSAGE_TITLE, text: this.title});
+        if (this.titleShouldRender()) {
+            messageEl.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: this.title });
         }
 
-        messageEl.createDiv({cls: CLASSES.MESSAGE_CONTENT, text: this.content});
+        messageEl.createDiv({ cls: CLASSES.MESSAGE_CONTENT, text: this.content });
     }
 
-    createMessageEl(): HTMLDivElement
-    {
+    createMessageEl(): HTMLDivElement {
         const sideClass = this.side == SIDES.LEFT ? CLASSES.MESSAGE_WRAPPER_LEFT : CLASSES.MESSAGE_WRAPPER_RIGHT;
         const messageWrapperEl = this.dialogueSettings.parent.createDiv({
             cls: `${CLASSES.BLOCK_WRAPPER} ${sideClass}`
@@ -57,17 +56,17 @@ export class Message {
     }
 
     titleShouldRender(): boolean {
-        if ( this.title.length < 1 ) return false;
+        if (this.title.length < 1) return false;
 
-        switch ( this.dialogueSettings.titleMode ) {
+        switch (this.dialogueSettings.titleMode) {
             case DialogueTitleMode.Disabled: return false;
             case DialogueTitleMode.All: return true;
             case DialogueTitleMode.First: {
-                if ( this.side == SIDES.LEFT && !this.dialogueSettings.leftTitleRenderedOnce ) {
+                if (this.side == SIDES.LEFT && !this.dialogueSettings.leftTitleRenderedOnce) {
                     this.dialogueSettings.leftTitleRenderedOnce = true;
                     return true;
                 }
-                else if ( this.side == SIDES.RIGHT && !this.dialogueSettings.rightTitleRenderedOnce ){
+                else if (this.side == SIDES.RIGHT && !this.dialogueSettings.rightTitleRenderedOnce) {
                     this.dialogueSettings.rightTitleRenderedOnce = true;
                     return true;
                 }
