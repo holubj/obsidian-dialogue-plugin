@@ -12,8 +12,8 @@ Parameters can be set using commands inside the dialogue. All available paramete
 
 | Parameter          | Description                                                                   | Default Value |
 | ------------------ | ----------------------------------------------------------------------------- | ------------- |
-| `left:`            | Name of the dialogue participant on the left side.                            | none          |
-| `right:`           | Name of the dialogue participant on the right side.                           | none          |
+| `left:` or `l:`    | Name of the dialogue participant on the left side.                            | none          |
+| `right:` or `r:`   | Name of the dialogue participant on the right side.                           | none          |
 | `titleMode:`       | Defines if and when to render titles. See available modes in the table below. | `first`       |
 | `messageMaxWidth:` | Defines the max message width in the dialogue.                                | `60%`         |
 | `commentMaxWidth:` | Defines the max comment width in the dialogue.                                | `60%`         |
@@ -111,7 +111,7 @@ left: Sion Sono
 
 ### Dialogue with delimiter
 
-Use the `delimiter` command to add a delimiter into the dialogue.
+Use the `delimiter` (or shorter `-`) command to add a delimiter into the dialogue.
 
 #### Example code
 
@@ -173,6 +173,10 @@ Each message has:
 -   `data-participant-name` attribute with a name of the dialogue participant as a value
 
 These attributes can be used in a **CSS snippet** to apply custom styles to messages based on the message author. See example below.
+
+### Specifying custom id for a dialogue particiant
+
+To specify a custom id for a participant in the dialogue (for example if you want to have the same color for the selected participant across multiple dialogues), you can do it by appending the id in the participant definition (for example `left-2: Name`, where `2` is your id).
 
 ### Styling example
 
