@@ -176,7 +176,7 @@ These attributes can be used in a **CSS snippet** to apply custom styles to mess
 
 ### Specifying custom id for a dialogue particiant
 
-To specify a custom id for a participant in the dialogue (for example if you want to have the same color for the selected participant across multiple dialogues), you can do it by appending the id in the participant definition (for example `left-2: Name`, where `2` is your id).
+To specify a custom id for a participant in the dialogue (for example if you want to have the same color for the selected participant across multiple dialogues), you can do it by appending the id to the participant definition (for example `left-2: Name`, where `2` is your id).
 
 ### Styling example
 
