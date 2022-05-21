@@ -1,5 +1,5 @@
 import { CLASSES } from '../constants/classes';
-import { DialogueSettings } from '../dialogue';
+import { DialogueSettings, Participant } from '../dialogue';
 import { DialogueTitleMode } from '../types/dialogueTitleMode';
 
 export abstract class SIDES {
@@ -15,7 +15,7 @@ export class Message {
 
     side: MessageSide;
 
-    title: string;
+    participant: Participant;
 
     dialogueSettings: DialogueSettings;
 
@@ -24,7 +24,7 @@ export class Message {
         this.side = side;
         this.dialogueSettings = dialogueSettings;
 
-        this.title = this.side == SIDES.LEFT ? this.dialogueSettings.leftTitle : this.dialogueSettings.rightTitle;
+        this.participant = this.side == SIDES.LEFT ? this.dialogueSettings.leftParticipant : this.dialogueSettings.rightParticipant;
 
         this.renderMessage();
     }
@@ -33,7 +33,7 @@ export class Message {
         const messageEl = this.createMessageEl();
 
         if (this.titleShouldRender()) {
-            messageEl.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: this.title });
+            messageEl.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: this.participant.title });
         }
 
         messageEl.createDiv({ cls: CLASSES.MESSAGE_CONTENT, text: this.content });
@@ -49,30 +49,23 @@ export class Message {
             cls: CLASSES.MESSAGE,
             attr: {
                 style: `max-width: ${this.dialogueSettings.messageMaxWidth};`,
-                'data-participant-name': this.title,
-                'data-participant-id': this.dialogueSettings.participants.get(this.title)
+                'data-participant-name': this.participant.title,
+                'data-participant-id': this.participant.enforcedId ?? this.dialogueSettings.participants.get(this.participant.title)
             }
         });
     }
 
     titleShouldRender(): boolean {
-        if (this.title.length < 1) return false;
+        if (this.participant.title.length < 1) return false;
 
         switch (this.dialogueSettings.titleMode) {
             case DialogueTitleMode.Disabled: return false;
             case DialogueTitleMode.All: return true;
             case DialogueTitleMode.First: {
-                if (this.side == SIDES.LEFT && !this.dialogueSettings.leftTitleRenderedOnce) {
-                    this.dialogueSettings.leftTitleRenderedOnce = true;
-                    return true;
-                }
-                else if (this.side == SIDES.RIGHT && !this.dialogueSettings.rightTitleRenderedOnce) {
-                    this.dialogueSettings.rightTitleRenderedOnce = true;
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                if (this.participant.renderedOnce) return false;
+
+                this.participant.renderedOnce = true;
+                return true;
             }
             default: return false;
         }

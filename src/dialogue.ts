@@ -6,26 +6,30 @@ import { Delimiter } from './components/delimiter';
 import { Comment } from './components/comment';
 
 abstract class KEYWORDS {
-    static readonly LEFT = 'left:';
-    static readonly RIGHT = 'right:';
+    static readonly LEFT_PATTERN = /^l(?:eft)?(?:-(\d+))?:/i;
+    static readonly RIGHT_PATTERN = /^r(?:ight)?(?:-(\d+))?:/i;
     static readonly TITLE_MODE = 'titleMode:';
     static readonly MESSAGE_MAX_WIDTH = 'messageMaxWidth:';
     static readonly COMMENT_MAX_WIDTH = 'commentMaxWidth:';
-    static readonly DELIMITER = 'delimiter';
+    static readonly DELIMITER = /^-|delimiter/;
     static readonly COMMENT = '#';
     static readonly MESSAGE_LEFT = '<';
     static readonly MESSAGE_RIGHT = '>';
 }
 
+export interface Participant {
+    title: string;
+    renderedOnce: boolean;
+    enforcedId: string;
+}
+
 export interface DialogueSettings {
     parent: HTMLElement;
-    leftTitle: string;
-    rightTitle: string;
+    leftParticipant: Participant;
+    rightParticipant: Participant;
     titleMode: DialogueTitleMode;
     messageMaxWidth: string;
     commentMaxWidth: string;
-    leftTitleRenderedOnce: boolean;
-    rightTitleRenderedOnce: boolean;
     participants: Map<string, number>;
 }
 
@@ -44,13 +48,19 @@ export class DialogueRenderer {
 
         this.dialogueSettings = {
             parent: this.dialogueWrapperEl,
-            leftTitle: settings.defaultLeftTitle,
-            rightTitle: settings.defaultRightTitle,
+            leftParticipant: {
+                title: settings.defaultLeftTitle,
+                renderedOnce: false,
+                enforcedId: null,
+            },
+            rightParticipant: {
+                title: settings.defaultRightTitle,
+                renderedOnce: false,
+                enforcedId: null,
+            },
             titleMode: settings.defaultTitleMode,
             messageMaxWidth: settings.defaultMessageMaxWidth,
             commentMaxWidth: settings.defaultCommentMaxWidth,
-            leftTitleRenderedOnce: false,
-            rightTitleRenderedOnce: false,
             participants: new Map<string, number>(),
         }
 
@@ -63,21 +73,33 @@ export class DialogueRenderer {
         }
     }
 
+    getEnforcedId(pattern: RegExp, line: string): string {
+        let enforcedId = null;
+        const result = pattern.exec(line);
+        if (result != null && result.length > 1) {
+            enforcedId = result[1];
+        }
+
+        return enforcedId;
+    }
+
     renderDialogue() {
         const lines = this.src
             .split(/\r?\n/)
             .map(line => line.trim())
-            .filter(line => line.length > 1);
+            .filter(line => line.length > 0);
 
         for (const line of lines) {
 
-            if (line.startsWith(KEYWORDS.LEFT)) {
-                this.dialogueSettings.leftTitle = line.substr(KEYWORDS.LEFT.length).trim();
-                this.dialogueSettings.leftTitleRenderedOnce = false; // reset this flag when a new title is set
+            if (KEYWORDS.LEFT_PATTERN.test(line)) {
+                this.dialogueSettings.leftParticipant.title = line.split(':').splice(1).join(':').trim();
+                this.dialogueSettings.leftParticipant.renderedOnce = false; // reset this flag when a new title is set
+                this.dialogueSettings.leftParticipant.enforcedId = this.getEnforcedId(KEYWORDS.LEFT_PATTERN, line);
             }
-            else if (line.startsWith(KEYWORDS.RIGHT)) {
-                this.dialogueSettings.rightTitle = line.substr(KEYWORDS.RIGHT.length).trim();
-                this.dialogueSettings.rightTitleRenderedOnce = false; // reset this flag when a new title is set
+            else if (KEYWORDS.RIGHT_PATTERN.test(line)) {
+                this.dialogueSettings.rightParticipant.title = line.split(':').splice(1).join(':').trim();
+                this.dialogueSettings.rightParticipant.renderedOnce = false; // reset this flag when a new title is set
+                this.dialogueSettings.rightParticipant.enforcedId = this.getEnforcedId(KEYWORDS.RIGHT_PATTERN, line);
             }
             else if (line.startsWith(KEYWORDS.TITLE_MODE)) {
                 const modeName = line.substr(KEYWORDS.TITLE_MODE.length).trim().toLowerCase();
@@ -91,7 +113,7 @@ export class DialogueRenderer {
             else if (line.startsWith(KEYWORDS.COMMENT_MAX_WIDTH)) {
                 this.dialogueSettings.commentMaxWidth = line.substr(KEYWORDS.COMMENT_MAX_WIDTH.length).trim();
             }
-            else if (line.startsWith(KEYWORDS.DELIMITER)) {
+            else if (KEYWORDS.DELIMITER.test(line)) {
                 new Delimiter(this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.COMMENT)) {
@@ -101,13 +123,13 @@ export class DialogueRenderer {
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_LEFT)) {
                 const content = line.substr(KEYWORDS.MESSAGE_LEFT.length);
-                this.registerParticipant(this.dialogueSettings.leftTitle);
+                this.registerParticipant(this.dialogueSettings.leftParticipant.title);
 
                 new Message(content, SIDES.LEFT, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_RIGHT)) {
                 const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length);
-                this.registerParticipant(this.dialogueSettings.rightTitle);
+                this.registerParticipant(this.dialogueSettings.rightParticipant.title);
 
                 new Message(content, SIDES.RIGHT, this.dialogueSettings);
             }
