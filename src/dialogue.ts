@@ -122,13 +122,13 @@ export class DialogueRenderer {
                 new Comment(content, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_LEFT)) {
-                const content = line.substr(KEYWORDS.MESSAGE_LEFT.length);
+                const content = line.substr(KEYWORDS.MESSAGE_LEFT.length).trim();
                 this.registerParticipant(this.dialogueSettings.leftParticipant.title);
 
                 new Message(content, SIDES.LEFT, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_RIGHT)) {
-                const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length);
+                const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length).trim();
                 this.registerParticipant(this.dialogueSettings.rightParticipant.title);
 
                 new Message(content, SIDES.RIGHT, this.dialogueSettings);
