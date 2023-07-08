@@ -5,9 +5,10 @@ import { DialogueTitleMode } from '../types/dialogueTitleMode';
 export abstract class SIDES {
     static readonly LEFT = 'left';
     static readonly RIGHT = 'right';
+    static readonly CENTER = 'center';
 }
 
-export type MessageSide = typeof SIDES.LEFT | typeof SIDES.RIGHT;
+export type MessageSide = typeof SIDES.LEFT | typeof SIDES.RIGHT | typeof SIDES.CENTER;
 
 export class Message {
 
@@ -24,8 +25,18 @@ export class Message {
         this.side = side;
         this.dialogueSettings = dialogueSettings;
 
-        this.participant = this.side == SIDES.LEFT ? this.dialogueSettings.leftParticipant : this.dialogueSettings.rightParticipant;
-
+        switch(this.side) {
+            case SIDES.LEFT: 
+                this.participant = this.dialogueSettings.leftParticipant;
+                break;
+            case SIDES.RIGHT: 
+                this.participant = this.dialogueSettings.rightParticipant;
+                break;
+            case SIDES.CENTER: 
+                this.participant = this.dialogueSettings.centerParticipant;
+                break;
+        }
+        
         this.renderMessage();
     }
 
@@ -40,7 +51,15 @@ export class Message {
     }
 
     createMessageEl(): HTMLDivElement {
-        const sideClass = this.side == SIDES.LEFT ? CLASSES.MESSAGE_WRAPPER_LEFT : CLASSES.MESSAGE_WRAPPER_RIGHT;
+
+        let sideClass = CLASSES.MESSAGE_WRAPPER_LEFT;
+
+        switch (this.side) {
+            case SIDES.LEFT: sideClass = CLASSES.MESSAGE_WRAPPER_LEFT; break;
+            case SIDES.RIGHT: sideClass = CLASSES.MESSAGE_WRAPPER_RIGHT; break;
+            case SIDES.CENTER: sideClass = CLASSES.MESSAGE_WRAPPER_CENTER; break;
+        }
+
         const messageWrapperEl = this.dialogueSettings.parent.createDiv({
             cls: `${CLASSES.BLOCK_WRAPPER} ${sideClass}`
         });

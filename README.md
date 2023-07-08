@@ -14,6 +14,7 @@ Parameters can be set using commands inside the dialogue. All available paramete
 | ------------------ | ----------------------------------------------------------------------------- | ------------- |
 | `left:` or `l:`    | Name of the dialogue participant on the left side.                            | none          |
 | `right:` or `r:`   | Name of the dialogue participant on the right side.                           | none          |
+| `center:` or `c:`  | Name of the dialogue participant in the middle.                               | none          |
 | `titleMode:`       | Defines if and when to render titles. See available modes in the table below. | `first`       |
 | `messageMaxWidth:` | Defines the max message width in the dialogue.                                | `60%`         |
 | `commentMaxWidth:` | Defines the max comment width in the dialogue.                                | `60%`         |
@@ -34,6 +35,7 @@ The message in the dialogue must be prefixed with
 
 -   either `<` (message on the left side)
 -   or `>` (message on the right side).
+-   or `=` (message in the middle).
 
 The message must be exactly one paragraph.
 

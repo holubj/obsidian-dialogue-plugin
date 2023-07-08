@@ -15,6 +15,10 @@
 	justify-content: flex-end;
 }
 
+.dialogue-plugin-message-wrapper-center {
+	justify-content: center;
+}
+
 .dialogue-plugin-message {
 	overflow: hidden;
 	max-width: 60%;

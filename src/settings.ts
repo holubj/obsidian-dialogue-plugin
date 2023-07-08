@@ -5,6 +5,7 @@ import { DialogueTitleMode } from './types/dialogueTitleMode';
 export interface DialoguePluginSettings {
 	defaultLeftTitle: string;
 	defaultRightTitle: string;
+	defaultCenterTitle: string;
 	defaultTitleMode: DialogueTitleMode;
 	defaultMessageMaxWidth: string;
 	defaultCommentMaxWidth: string;
@@ -13,6 +14,7 @@ export interface DialoguePluginSettings {
 export const DEFAULT_SETTINGS: DialoguePluginSettings = {
 	defaultLeftTitle: '',
 	defaultRightTitle: '',
+	defaultCenterTitle: '',
 	defaultTitleMode: DialogueTitleMode.First,
 	defaultMessageMaxWidth: '60%',
 	defaultCommentMaxWidth: '60%',
@@ -67,6 +69,17 @@ export class DialogueSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.defaultRightTitle)
 					.onChange(async (value) => {
 						this.plugin.settings.defaultRightTitle = value;
+						await this.plugin.saveSettings();
+					}));
+
+		new Setting(containerEl)
+			.setName('Default center title')
+			.setDesc('Default value for center title in all dialogues.')
+			.addText(text =>
+				text.setPlaceholder('Enter default center title')
+					.setValue(this.plugin.settings.defaultCenterTitle)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultCenterTitle = value;
 						await this.plugin.saveSettings();
 					}));
 

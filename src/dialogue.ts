@@ -8,6 +8,7 @@ import { Comment } from './components/comment';
 abstract class KEYWORDS {
     static readonly LEFT_PATTERN = /^l(?:eft)?(?:-(\d+))?:/i;
     static readonly RIGHT_PATTERN = /^r(?:ight)?(?:-(\d+))?:/i;
+    static readonly CENTER_PATTERN = /^c(?:center)?(?:-(\d+))?:/i;
     static readonly TITLE_MODE = 'titleMode:';
     static readonly MESSAGE_MAX_WIDTH = 'messageMaxWidth:';
     static readonly COMMENT_MAX_WIDTH = 'commentMaxWidth:';
@@ -15,6 +16,7 @@ abstract class KEYWORDS {
     static readonly COMMENT = '#';
     static readonly MESSAGE_LEFT = '<';
     static readonly MESSAGE_RIGHT = '>';
+    static readonly MESSAGE_CENTER = '=';
 }
 
 export interface Participant {
@@ -27,6 +29,7 @@ export interface DialogueSettings {
     parent: HTMLElement;
     leftParticipant: Participant;
     rightParticipant: Participant;
+    centerParticipant: Participant;
     titleMode: DialogueTitleMode;
     messageMaxWidth: string;
     commentMaxWidth: string;
@@ -55,6 +58,11 @@ export class DialogueRenderer {
             },
             rightParticipant: {
                 title: settings.defaultRightTitle,
+                renderedOnce: false,
+                enforcedId: null,
+            },
+            centerParticipant: {
+                title: settings.defaultCenterTitle,
                 renderedOnce: false,
                 enforcedId: null,
             },
@@ -101,6 +109,11 @@ export class DialogueRenderer {
                 this.dialogueSettings.rightParticipant.renderedOnce = false; // reset this flag when a new title is set
                 this.dialogueSettings.rightParticipant.enforcedId = this.getEnforcedId(KEYWORDS.RIGHT_PATTERN, line);
             }
+            else if (KEYWORDS.CENTER_PATTERN.test(line)) {
+                this.dialogueSettings.centerParticipant.title = line.split(':').splice(1).join(':').trim();
+                this.dialogueSettings.centerParticipant.renderedOnce = false; // reset this flag when a new title is set
+                this.dialogueSettings.centerParticipant.enforcedId = this.getEnforcedId(KEYWORDS.CENTER_PATTERN, line);
+            }
             else if (line.startsWith(KEYWORDS.TITLE_MODE)) {
                 const modeName = line.substr(KEYWORDS.TITLE_MODE.length).trim().toLowerCase();
                 if (Object.values(DialogueTitleMode).some(mode => mode == modeName)) {
@@ -122,14 +135,20 @@ export class DialogueRenderer {
                 new Comment(content, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_LEFT)) {
-                const content = line.substr(KEYWORDS.MESSAGE_LEFT.length);
+                const content = line.substr(KEYWORDS.MESSAGE_LEFT.length).trim();
                 this.registerParticipant(this.dialogueSettings.leftParticipant.title);
 
                 new Message(content, SIDES.LEFT, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_RIGHT)) {
-                const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length);
+                const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length).trim();
                 this.registerParticipant(this.dialogueSettings.rightParticipant.title);
+
+                new Message(content, SIDES.RIGHT, this.dialogueSettings);
+            }
+            else if (line.startsWith(KEYWORDS.MESSAGE_CENTER)) {
+                const content = line.substr(KEYWORDS.MESSAGE_CENTER.length).trim();
+                this.registerParticipant(this.dialogueSettings.centerParticipant.title);
 
                 new Message(content, SIDES.RIGHT, this.dialogueSettings);
             }
