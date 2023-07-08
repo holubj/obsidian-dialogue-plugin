@@ -19,7 +19,7 @@ Parameters can be set using commands inside the dialogue. All available paramete
 | `rightFooter:`  or `rf:` | Default footer content for the dialogue on the right side.                             | none          |
 | `centerFooter:` or `cf:` | Default footer content for the dialogue on the middle.                                 | none          |
 | `titleMode:`             | Defines if and when to render titles. See available modes in the table below.          | `first`       |
-| `footerMode:`            | Defines if and when to render default footers. See available modes in the table below. | `disabled`    |
+| `footerMode:`            | Defines if and when to render default footers. See available modes in the table below. | `all`    |
 | `messageMaxWidth:`       | Defines the max message width in the dialogue.                                         | `60%`         |
 | `commentMaxWidth:`       | Defines the max comment width in the dialogue.                                         | `60%`         |
 | `clean:`                 | Hide unparsable text.                                                                  | `true`        |
