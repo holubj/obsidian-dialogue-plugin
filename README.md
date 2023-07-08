@@ -10,18 +10,23 @@ Parameters can be set using commands inside the dialogue. All available paramete
 
 ### Available parameters
 
-| Parameter                | Description                                                                   | Default Value |
-|--------------------------|-------------------------------------------------------------------------------|---------------|
-| `left:` or `l:`          | Name of the dialogue participant on the left side.                            | none          |
-| `right:` or `r:`         | Name of the dialogue participant on the right side.                           | none          |
-| `center:` or `c:`        | Name of the dialogue participant in the middle.                               | none          |
-| `titleMode:`             | Defines if and when to render titles. See available modes in the table below. | `first`       |
-| `messageMaxWidth:`       | Defines the max message width in the dialogue.                                | `60%`         |
-| `commentMaxWidth:`       | Defines the max comment width in the dialogue.                                | `60%`         |
-| `clean:`                 | Hide unparsable text.                                                         | `true`        |
-| `renderMarkdownTitle:`   | Render markdown in the title.                                                 | `true`        |
-| `renderMarkdownContent:` | Render markdown in the content.                                               | `true`        |
-| `renderMarkdownComment:` | Render markdown in the comment.                                               | `true`        |
+| Parameter                | Description                                                                            | Default Value |
+|--------------------------|----------------------------------------------------------------------------------------|---------------|
+| `left:` or `l:`          | Name of the dialogue participant on the left side.                                     | none          |
+| `right:` or `r:`         | Name of the dialogue participant on the right side.                                    | none          |
+| `center:` or `c:`        | Name of the dialogue participant in the middle.                                        | none          |
+| `leftFooter:` or `lf:`   | Default footer content for the dialogue on the left side.                              | none          |
+| `rightFooter:`  or `rf:` | Default footer content for the dialogue on the right side.                             | none          |
+| `centerFooter:` or `cf:` | Default footer content for the dialogue on the middle.                                 | none          |
+| `titleMode:`             | Defines if and when to render titles. See available modes in the table below.          | `first`       |
+| `footerMode:`            | Defines if and when to render default footers. See available modes in the table below. | `disabled`    |
+| `messageMaxWidth:`       | Defines the max message width in the dialogue.                                         | `60%`         |
+| `commentMaxWidth:`       | Defines the max comment width in the dialogue.                                         | `60%`         |
+| `clean:`                 | Hide unparsable text.                                                                  | `true`        |
+| `renderMarkdownTitle:`   | Render markdown in the title.                                                          | `true`        |
+| `renderMarkdownContent:` | Render markdown in the content.                                                        | `true`        |
+| `renderMarkdownFooter:`  | Render markdown in the footer.                                                         | `true`        |
+| `renderMarkdownComment:` | Render markdown in the comment.                                                        | `true`        |
 
 
 ### Title Modes
@@ -31,6 +36,13 @@ Parameters can be set using commands inside the dialogue. All available paramete
 | `disabled` | Disable all titles.                            |
 | `first`    | Render each title only on the first occurence. |
 | `all`      | Always render title.                           |
+
+### Footer Modes
+
+| Mode       | Description                                            |
+|------------|--------------------------------------------------------|
+| `disabled` | Disable all default footers.                           |
+| `all`      | Always render default footer.                          |
 
 ## Usage
 
@@ -43,6 +55,22 @@ The message in the dialogue must be prefixed with
 -   or `=` (message in the middle).
 
 The message must be exactly one paragraph.
+
+To add a footer to a dialogue, use `::` right after the dialogue message.
+
+````
+```dialogue
+< Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec tristique nunc, et pharetra sem.
+:: footer content for left side
+
+> Lorem ipsum dolor sit amet
+:: footer content for right side
+> Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem.
+
+leftFooter: default footer content for left side
+< Nam egestas tristique felis, sed suscipit nunc commodo nec.
+```
+````
 
 #### Example code
 

@@ -1,24 +1,31 @@
 import { DialoguePluginSettings } from './settings';
 import { DialogueTitleMode } from './types/dialogueTitleMode';
+import { DialogueFooterMode } from './types/dialogueFooterMode';
 import { CLASSES } from './constants/classes';
 import { Message, SIDES } from './components/message';
 import { Delimiter } from './components/delimiter';
 import { Comment } from './components/comment';
-import { App, Component, MarkdownPreviewView } from 'obsidian';
+import { Component, MarkdownPreviewView } from 'obsidian';
 
 abstract class KEYWORDS {
     static readonly LEFT_PATTERN = /^l(?:eft)?(?:-(\d+))?:/i;
     static readonly RIGHT_PATTERN = /^r(?:ight)?(?:-(\d+))?:/i;
     static readonly CENTER_PATTERN = /^c(?:enter)?(?:-(\d+))?:/i;
+    static readonly LEFT_FOOTER_PATTERN = /^(lf|leftFooter):/i;
+    static readonly RIGHT_FOOTER_PATTERN = /^(rf|rightFooter):/i;
+    static readonly CENTER_FOOTER_PATTERN = /^(cf|centerFooter):/i;
     static readonly TITLE_MODE = 'titleMode:';
+    static readonly FOOTER_MODE = 'footerMode:';
     static readonly MESSAGE_MAX_WIDTH = 'messageMaxWidth:';
     static readonly COMMENT_MAX_WIDTH = 'commentMaxWidth:';
     static readonly CLEAN = 'clean:';
     static readonly RENDER_MARKDOWN_TITLE = 'renderMarkdownTitle:';
     static readonly RENDER_MARKDOWN_CONTENT = 'renderMarkdownContent:';
+    static readonly RENDER_MARKDOWN_FOOTER = 'renderMarkdownFooter:';
     static readonly RENDER_MARKDOWN_COMMENT = 'renderMarkdownComment:';
     static readonly DELIMITER = /^-|delimiter/;
     static readonly COMMENT = '#';
+    static readonly FOOTER = '::';
     static readonly MESSAGE_LEFT = '<';
     static readonly MESSAGE_RIGHT = '>';
     static readonly MESSAGE_CENTER = '=';
@@ -30,15 +37,24 @@ export interface Participant {
     enforcedId: string;
 }
 
+export interface FooterContent {
+    content: string;
+}
+
 export interface DialogueSettings {
     parent: HTMLElement;
     leftParticipant: Participant;
     rightParticipant: Participant;
     centerParticipant: Participant;
+    leftFooter: FooterContent;
+    rightFooter: FooterContent;
+    centerFooter: FooterContent;
     titleMode: DialogueTitleMode;
+    footerMode: DialogueFooterMode;
     clean: boolean;
     renderMarkdownTitle: boolean;
     renderMarkdownContent: boolean;
+    renderMarkdownFooter: boolean;
     renderMarkdownComment: boolean;
     messageMaxWidth: string;
     commentMaxWidth: string;
@@ -79,11 +95,22 @@ export class DialogueRenderer {
                 renderedOnce: false,
                 enforcedId: null,
             },
+            leftFooter: {
+                content: settings.defaultLeftFooter,
+            },
+            rightFooter: {
+                content: settings.defaultRightFooter,
+            },
+            centerFooter: {
+                content: settings.defaultCenterFooter,
+            },
             clean: settings.defaultClean,
             renderMarkdownTitle: settings.defaultRenderMarkdownTitle,
             renderMarkdownContent: settings.defaultRenderMarkdownContent,
+            renderMarkdownFooter: settings.defaultRenderMarkdownFooter,
             renderMarkdownComment: settings.defaultRenderMarkdownComment,
             titleMode: settings.defaultTitleMode,
+            footerMode: settings.defaultFooterMode,
             messageMaxWidth: settings.defaultMessageMaxWidth,
             commentMaxWidth: settings.defaultCommentMaxWidth,
             participants: new Map<string, number>(),
@@ -98,11 +125,11 @@ export class DialogueRenderer {
         }
     }
 
-    getEnforcedId(pattern: RegExp, line: string): string {
+    getEnforcedId(pattern: RegExp, line: string, group = 1): string {
         let enforcedId = null;
         const result = pattern.exec(line);
         if (result != null && result.length > 1) {
-            enforcedId = result[1];
+            enforcedId = result[group];
         }
 
         return enforcedId;
@@ -114,12 +141,16 @@ export class DialogueRenderer {
             .map(line => line.trim())
             .filter(line => line.length > 0);
 
+        let prevMessage: Message | null = null;
             
-        for (const line of lines) {
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
 
             let message: Message | null = null;
 
             let comment: Comment | null = null;
+
+            let customFooter = false;
 
             let content: string = '';
 
@@ -138,23 +169,41 @@ export class DialogueRenderer {
                 this.dialogueSettings.centerParticipant.renderedOnce = false; // reset this flag when a new title is set
                 this.dialogueSettings.centerParticipant.enforcedId = this.getEnforcedId(KEYWORDS.CENTER_PATTERN, line);
             }
+            else if (KEYWORDS.LEFT_FOOTER_PATTERN.test(line)) {
+                this.dialogueSettings.leftFooter.content = line.split(':').splice(1).join(':').trim();
+            }
+            else if (KEYWORDS.RIGHT_FOOTER_PATTERN.test(line)) {
+                this.dialogueSettings.rightFooter.content = line.split(':').splice(1).join(':').trim();
+            }
+            else if (KEYWORDS.CENTER_FOOTER_PATTERN.test(line)) {
+                this.dialogueSettings.centerFooter.content = line.split(':').splice(1).join(':').trim();
+            }
             else if (line.startsWith(KEYWORDS.TITLE_MODE)) {
                 const modeName = line.substr(KEYWORDS.TITLE_MODE.length).trim().toLowerCase();
-                if (Object.values(DialogueTitleMode).some(mode => mode == modeName)) {
+                if (Object.values(DialogueTitleMode).some(mode => mode === modeName)) {
                     this.dialogueSettings.titleMode = modeName as DialogueTitleMode;
                 }
             }
+            else if (line.startsWith(KEYWORDS.FOOTER_MODE)) {
+                const modeName = line.substr(KEYWORDS.FOOTER_MODE.length).trim().toLowerCase();
+                if (Object.values(DialogueFooterMode).some(mode => mode === modeName)) {
+                    this.dialogueSettings.footerMode = modeName as DialogueFooterMode;
+                }
+            }
             else if (line.startsWith(KEYWORDS.CLEAN)) {
-                this.dialogueSettings.clean = line.substr(KEYWORDS.CLEAN.length).trim().toLowerCase() == 'true';
+                this.dialogueSettings.clean = line.substr(KEYWORDS.CLEAN.length).trim().toLowerCase() === 'true';
             }
             else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_TITLE)) {
-                this.dialogueSettings.renderMarkdownTitle = line.substr(KEYWORDS.RENDER_MARKDOWN_TITLE.length).trim().toLowerCase() == 'true';
+                this.dialogueSettings.renderMarkdownTitle = line.substr(KEYWORDS.RENDER_MARKDOWN_TITLE.length).trim().toLowerCase() === 'true';
             }
             else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_CONTENT)) {
-                this.dialogueSettings.renderMarkdownContent = line.substr(KEYWORDS.RENDER_MARKDOWN_CONTENT.length).trim().toLowerCase() == 'true';
+                this.dialogueSettings.renderMarkdownContent = line.substr(KEYWORDS.RENDER_MARKDOWN_CONTENT.length).trim().toLowerCase() === 'true';
+            }
+            else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_FOOTER)) {
+                this.dialogueSettings.renderMarkdownFooter = line.substr(KEYWORDS.RENDER_MARKDOWN_FOOTER.length).trim().toLowerCase() === 'true';
             }
             else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_COMMENT)) {
-                this.dialogueSettings.renderMarkdownComment = line.substr(KEYWORDS.RENDER_MARKDOWN_COMMENT.length).trim().toLowerCase() == 'true';
+                this.dialogueSettings.renderMarkdownComment = line.substr(KEYWORDS.RENDER_MARKDOWN_COMMENT.length).trim().toLowerCase() === 'true';
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_MAX_WIDTH)) {
                 this.dialogueSettings.messageMaxWidth = line.substr(KEYWORDS.MESSAGE_MAX_WIDTH.length).trim();
@@ -187,17 +236,22 @@ export class DialogueRenderer {
                 this.registerParticipant(this.dialogueSettings.centerParticipant.title);
 
                 message = new Message(SIDES.CENTER, this.dialogueSettings);
+            }
+            else if (line.startsWith(KEYWORDS.FOOTER)) {
+                customFooter = true;
+                content = line.substr(KEYWORDS.FOOTER.length);
             } else if (!this.dialogueSettings.clean) {
                 const unparsedEl = this.dialogueWrapperEl.createDiv({ cls: CLASSES.UNPARSED });
                 this.renderMarkdown(line, unparsedEl, false)
             }
 
+            // MESSAGE
+
             if (message != null) {
-                const msgEl = message.renderMessage();
+                message.renderMessage();
 
                 if (message.titleShouldRender()) {
                     const titleEl = message.renderTitle(
-                        msgEl, 
                         this.dialogueSettings.renderMarkdownTitle ? undefined : message.participant.title
                         );
 
@@ -207,7 +261,6 @@ export class DialogueRenderer {
                 }
 
                 const contentEl = message.renderContent(
-                    msgEl,
                     this.dialogueSettings.renderMarkdownContent ? undefined : content
                     );
 
@@ -215,6 +268,8 @@ export class DialogueRenderer {
                     this.renderMarkdown(content, contentEl)
                 }
             }
+
+            // COMMENT
 
             if (comment != null) {
                 const cmtEl = comment.renderComment(
@@ -224,6 +279,35 @@ export class DialogueRenderer {
                 if (this.dialogueSettings.renderMarkdownComment) {
                     this.renderMarkdown(content, cmtEl)
                 }
+            }
+
+            // FOOTER
+
+            if (prevMessage !== null) {
+                this.renderMessageFooter(prevMessage, customFooter ? content : undefined);
+            }
+
+            // resets prev message
+            prevMessage = message;
+        }
+
+        // Set footer for last message
+        if (prevMessage !== null) {
+            this.renderMessageFooter(prevMessage);
+        }
+    }
+
+    renderMessageFooter(message: Message, content?: string ) {
+        let footerContent = content;
+        if (footerContent === undefined && this.dialogueSettings.footerMode === DialogueFooterMode.All && message.defaultFooterShouldRender()) {
+            footerContent = message.footerContent.content;
+        }
+
+        if (footerContent) {
+            const footerEl = message.renderFooter(this.dialogueSettings.renderMarkdownFooter ? undefined : footerContent);
+
+            if (this.dialogueSettings.renderMarkdownFooter) {
+                this.renderMarkdown(footerContent, footerEl)
             }
         }
     }

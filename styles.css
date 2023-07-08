@@ -35,6 +35,13 @@
 	padding: 5px 10px;
 }
 
+.dialogue-plugin-message-footer {
+	padding: 5px 10px;
+	font-weight: lighter;
+	font-size: smaller;
+	background-color: rgba(0, 0, 0, 0.1);
+}
+
 .dialogue-plugin-delimiter-wrapper {
 	justify-content: center;
 }

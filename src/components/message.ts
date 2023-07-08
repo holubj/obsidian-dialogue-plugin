@@ -1,6 +1,7 @@
-import { CLASSES } from '../constants/classes';
-import { DialogueSettings, Participant } from '../dialogue';
+import { DialogueFooterMode } from 'src/types/dialogueFooterMode';
 import { DialogueTitleMode } from '../types/dialogueTitleMode';
+import { CLASSES } from '../constants/classes';
+import { DialogueSettings, FooterContent, Participant } from '../dialogue';
 
 export abstract class SIDES {
     static readonly LEFT = 'left';
@@ -16,6 +17,10 @@ export class Message {
 
     participant: Participant;
 
+    footerContent: FooterContent
+
+    element?: HTMLDivElement;
+
     dialogueSettings: DialogueSettings;
 
     constructor(side: MessageSide, dialogueSettings: DialogueSettings) {
@@ -23,29 +28,40 @@ export class Message {
         this.dialogueSettings = dialogueSettings;
 
         switch(this.side) {
-            case SIDES.LEFT: 
+            case SIDES.LEFT: {
                 this.participant = this.dialogueSettings.leftParticipant;
+                this.footerContent = this.dialogueSettings.leftFooter;
                 break;
-            case SIDES.RIGHT: 
+            }
+            case SIDES.RIGHT: {
                 this.participant = this.dialogueSettings.rightParticipant;
+                this.footerContent = this.dialogueSettings.rightFooter;
                 break;
-            case SIDES.CENTER: 
+            }
+            case SIDES.CENTER: {
                 this.participant = this.dialogueSettings.centerParticipant;
+                this.footerContent = this.dialogueSettings.centerFooter;
                 break;
+            }
         }
         
     }
 
     renderMessage() {
-        return this.createMessageEl();
+        this.element = this.createMessageEl();
+        return this.element;
     }
 
-    renderContent(messageEl: HTMLElement, content?: string) {
-        return messageEl.createDiv({ cls: CLASSES.MESSAGE_CONTENT, text: content });
+    renderContent(content?: string) {
+        return this.element.createDiv({ cls: CLASSES.MESSAGE_CONTENT, text: content });
     }
 
-    renderTitle(messageEl: HTMLElement, title?: string) {
-        return messageEl.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: title });
+    renderTitle(title?: string) {
+        return this.element.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: title });
+    }
+
+    renderFooter(content?: string): HTMLDivElement {
+        return this.element.createDiv({ cls: CLASSES.MESSAGE_FOOTER, text: content});
     }
 
     createMessageEl(): HTMLDivElement {
@@ -84,6 +100,16 @@ export class Message {
                 this.participant.renderedOnce = true;
                 return true;
             }
+            default: return false;
+        }
+    }
+
+    defaultFooterShouldRender(): boolean {
+        if (this.footerContent.content.length < 1) return false;
+
+        switch (this.dialogueSettings.footerMode) {
+            case DialogueFooterMode.Disabled: return false;
+            case DialogueFooterMode.All: return true;
             default: return false;
         }
     }

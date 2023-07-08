@@ -8,6 +8,7 @@ export abstract class CLASSES {
     static readonly MESSAGE = 'dialogue-plugin-message';
     static readonly MESSAGE_TITLE = 'dialogue-plugin-message-title';
     static readonly MESSAGE_CONTENT = 'dialogue-plugin-message-content';
+    static readonly MESSAGE_FOOTER = 'dialogue-plugin-message-footer';
     static readonly DELIMITER_WRAPPER = 'dialogue-plugin-delimiter-wrapper';
     static readonly DELIMITER = 'dialogue-plugin-delimiter';
     static readonly DELIMITER_DOT = 'dialogue-plugin-delimiter-dot';
