@@ -56,7 +56,7 @@ The message in the dialogue must be prefixed with
 
 The message must be exactly one paragraph.
 
-To add a footer to a dialogue, use `::` right after the dialogue message.
+To add a footer to a dialogue, use the prefix `::` after the dialogue.
 
 ````
 ```dialogue
@@ -67,6 +67,7 @@ To add a footer to a dialogue, use `::` right after the dialogue message.
 :: footer content for right side
 > Ut nec efficitur mauris, a lacinia purus. Fusce nisi arcu, sollicitudin eget sodales sit amet, consectetur a lorem.
 
+footerMode: all
 leftFooter: default footer content for left side
 < Nam egestas tristique felis, sed suscipit nunc commodo nec.
 ```
