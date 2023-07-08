@@ -34,7 +34,7 @@ export const DEFAULT_SETTINGS: DialoguePluginSettings = {
 	defaultRenderMarkdownFooter: true,
 	defaultRenderMarkdownComment: true,
 	defaultTitleMode: DialogueTitleMode.First,
-	defaultFooterMode: DialogueFooterMode.Disabled,
+	defaultFooterMode: DialogueFooterMode.All,
 	defaultMessageMaxWidth: '60%',
 	defaultCommentMaxWidth: '60%',
 }
