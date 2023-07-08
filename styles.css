@@ -15,6 +15,10 @@
 	justify-content: flex-end;
 }
 
+.dialogue-plugin-message-wrapper-center {
+	justify-content: center;
+}
+
 .dialogue-plugin-message {
 	overflow: hidden;
 	max-width: 60%;
@@ -29,6 +33,13 @@
 
 .dialogue-plugin-message-content {
 	padding: 5px 10px;
+}
+
+.dialogue-plugin-message-footer {
+	padding: 5px 10px;
+	font-weight: lighter;
+	font-size: smaller;
+	background-color: rgba(0, 0, 0, 0.1);
 }
 
 .dialogue-plugin-delimiter-wrapper {
@@ -55,4 +66,9 @@
 .dialogue-plugin-comment {
 	margin: 20px 0;
 	text-align: center;
+}
+
+.dialogue-plugin-render > *:first-child {
+	margin-top: 0;
+    margin-bottom: 0;
 }
