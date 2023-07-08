@@ -13,4 +13,6 @@ export abstract class CLASSES {
     static readonly DELIMITER_DOT = 'dialogue-plugin-delimiter-dot';
     static readonly COMMENT_WRAPPER = 'dialogue-plugin-comment-wrapper';
     static readonly COMMENT = 'dialogue-plugin-comment';
+    static readonly RENDER = 'dialogue-plugin-render';
+    static readonly UNPARSED = 'dialogue-plugin-unparsed';
 }

@@ -6,6 +6,10 @@ export interface DialoguePluginSettings {
 	defaultLeftTitle: string;
 	defaultRightTitle: string;
 	defaultCenterTitle: string;
+	defaultClean: boolean;
+	defaultRenderMarkdownContent: boolean;
+	defaultRenderMarkdownTitle: boolean;
+	defaultRenderMarkdownComment: boolean;
 	defaultTitleMode: DialogueTitleMode;
 	defaultMessageMaxWidth: string;
 	defaultCommentMaxWidth: string;
@@ -15,6 +19,10 @@ export const DEFAULT_SETTINGS: DialoguePluginSettings = {
 	defaultLeftTitle: '',
 	defaultRightTitle: '',
 	defaultCenterTitle: '',
+	defaultClean: true,
+	defaultRenderMarkdownContent: true,
+	defaultRenderMarkdownComment: true,
+	defaultRenderMarkdownTitle: true,
 	defaultTitleMode: DialogueTitleMode.First,
 	defaultMessageMaxWidth: '60%',
 	defaultCommentMaxWidth: '60%',
@@ -118,6 +126,46 @@ export class DialogueSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.defaultCommentMaxWidth)
 					.onChange(async (value) => {
 						this.plugin.settings.defaultCommentMaxWidth = value;
+						await this.plugin.saveSettings();
+					}));
+
+		new Setting(containerEl)
+		.setName('Default clean')
+		.setDesc('Default value for hiding unparsable text.')
+		.addToggle(toggle =>
+			toggle.setValue(this.plugin.settings.defaultClean)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultClean = value;
+						await this.plugin.saveSettings();
+					}));
+
+		new Setting(containerEl)
+		.setName('Default render markdown title')
+		.setDesc('Default value for rendering markdown in title.')
+		.addToggle(toggle =>
+			toggle.setValue(this.plugin.settings.defaultRenderMarkdownTitle)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultRenderMarkdownTitle = value;
+						await this.plugin.saveSettings();
+					}));
+
+		new Setting(containerEl)
+		.setName('Default render markdown content')
+		.setDesc('Default value for rendering markdown in content.')
+		.addToggle(toggle =>
+			toggle.setValue(this.plugin.settings.defaultRenderMarkdownContent)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultRenderMarkdownContent = value;
+						await this.plugin.saveSettings();
+					}));
+
+		new Setting(containerEl)
+		.setName('Default render markdown comment')
+		.setDesc('Default value for rendering markdown in comment.')
+		.addToggle(toggle =>
+			toggle.setValue(this.plugin.settings.defaultRenderMarkdownComment)
+					.onChange(async (value) => {
+						this.plugin.settings.defaultRenderMarkdownComment = value;
 						await this.plugin.saveSettings();
 					}));
 	}

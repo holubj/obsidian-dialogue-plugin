@@ -13,7 +13,7 @@ export default class DialoguePlugin extends Plugin {
 		this.registerMarkdownCodeBlockProcessor(
 			`dialogue`,
 			(src, el, ctx) => {
-				new DialogueRenderer(src, el, this.settings);
+				new DialogueRenderer(this, src, el, this.settings);
 			}
 		);
 

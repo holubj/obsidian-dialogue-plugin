@@ -12,16 +12,13 @@ export type MessageSide = typeof SIDES.LEFT | typeof SIDES.RIGHT | typeof SIDES.
 
 export class Message {
 
-    content: string;
-
     side: MessageSide;
 
     participant: Participant;
 
     dialogueSettings: DialogueSettings;
 
-    constructor(content: string, side: MessageSide, dialogueSettings: DialogueSettings) {
-        this.content = content;
+    constructor(side: MessageSide, dialogueSettings: DialogueSettings) {
         this.side = side;
         this.dialogueSettings = dialogueSettings;
 
@@ -37,17 +34,18 @@ export class Message {
                 break;
         }
         
-        this.renderMessage();
     }
 
     renderMessage() {
-        const messageEl = this.createMessageEl();
+        return this.createMessageEl();
+    }
 
-        if (this.titleShouldRender()) {
-            messageEl.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: this.participant.title });
-        }
+    renderContent(messageEl: HTMLElement, content?: string) {
+        return messageEl.createDiv({ cls: CLASSES.MESSAGE_CONTENT, text: content });
+    }
 
-        messageEl.createDiv({ cls: CLASSES.MESSAGE_CONTENT, text: this.content });
+    renderTitle(messageEl: HTMLElement, title?: string) {
+        return messageEl.createDiv({ cls: CLASSES.MESSAGE_TITLE, text: title });
     }
 
     createMessageEl(): HTMLDivElement {

@@ -4,6 +4,7 @@ import { CLASSES } from './constants/classes';
 import { Message, SIDES } from './components/message';
 import { Delimiter } from './components/delimiter';
 import { Comment } from './components/comment';
+import { App, Component, MarkdownPreviewView } from 'obsidian';
 
 abstract class KEYWORDS {
     static readonly LEFT_PATTERN = /^l(?:eft)?(?:-(\d+))?:/i;
@@ -12,6 +13,10 @@ abstract class KEYWORDS {
     static readonly TITLE_MODE = 'titleMode:';
     static readonly MESSAGE_MAX_WIDTH = 'messageMaxWidth:';
     static readonly COMMENT_MAX_WIDTH = 'commentMaxWidth:';
+    static readonly CLEAN = 'clean:';
+    static readonly RENDER_MARKDOWN_TITLE = 'renderMarkdownTitle:';
+    static readonly RENDER_MARKDOWN_CONTENT = 'renderMarkdownContent:';
+    static readonly RENDER_MARKDOWN_COMMENT = 'renderMarkdownComment:';
     static readonly DELIMITER = /^-|delimiter/;
     static readonly COMMENT = '#';
     static readonly MESSAGE_LEFT = '<';
@@ -31,6 +36,10 @@ export interface DialogueSettings {
     rightParticipant: Participant;
     centerParticipant: Participant;
     titleMode: DialogueTitleMode;
+    clean: boolean;
+    renderMarkdownTitle: boolean;
+    renderMarkdownContent: boolean;
+    renderMarkdownComment: boolean;
     messageMaxWidth: string;
     commentMaxWidth: string;
     participants: Map<string, number>;
@@ -38,13 +47,17 @@ export interface DialogueSettings {
 
 export class DialogueRenderer {
 
+    component: Component;
+
     src: string;
 
     dialogueWrapperEl: HTMLElement;
 
     dialogueSettings: DialogueSettings;
 
-    constructor(src: string, parent: HTMLElement, settings: DialoguePluginSettings) {
+    constructor(component: Component, src: string, parent: HTMLElement, settings: DialoguePluginSettings) {
+        this.component = component;
+        
         this.src = src;
 
         this.dialogueWrapperEl = parent.createDiv({ cls: CLASSES.DIALOGUE_WRAPPER });
@@ -66,6 +79,10 @@ export class DialogueRenderer {
                 renderedOnce: false,
                 enforcedId: null,
             },
+            clean: settings.defaultClean,
+            renderMarkdownTitle: settings.defaultRenderMarkdownTitle,
+            renderMarkdownContent: settings.defaultRenderMarkdownContent,
+            renderMarkdownComment: settings.defaultRenderMarkdownComment,
             titleMode: settings.defaultTitleMode,
             messageMaxWidth: settings.defaultMessageMaxWidth,
             commentMaxWidth: settings.defaultCommentMaxWidth,
@@ -97,7 +114,14 @@ export class DialogueRenderer {
             .map(line => line.trim())
             .filter(line => line.length > 0);
 
+            
         for (const line of lines) {
+
+            let message: Message | null = null;
+
+            let comment: Comment | null = null;
+
+            let content: string = '';
 
             if (KEYWORDS.LEFT_PATTERN.test(line)) {
                 this.dialogueSettings.leftParticipant.title = line.split(':').splice(1).join(':').trim();
@@ -120,6 +144,18 @@ export class DialogueRenderer {
                     this.dialogueSettings.titleMode = modeName as DialogueTitleMode;
                 }
             }
+            else if (line.startsWith(KEYWORDS.CLEAN)) {
+                this.dialogueSettings.clean = line.substr(KEYWORDS.CLEAN.length).trim().toLowerCase() == 'true';
+            }
+            else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_TITLE)) {
+                this.dialogueSettings.renderMarkdownTitle = line.substr(KEYWORDS.RENDER_MARKDOWN_TITLE.length).trim().toLowerCase() == 'true';
+            }
+            else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_CONTENT)) {
+                this.dialogueSettings.renderMarkdownContent = line.substr(KEYWORDS.RENDER_MARKDOWN_CONTENT.length).trim().toLowerCase() == 'true';
+            }
+            else if (line.startsWith(KEYWORDS.RENDER_MARKDOWN_COMMENT)) {
+                this.dialogueSettings.renderMarkdownComment = line.substr(KEYWORDS.RENDER_MARKDOWN_COMMENT.length).trim().toLowerCase() == 'true';
+            }
             else if (line.startsWith(KEYWORDS.MESSAGE_MAX_WIDTH)) {
                 this.dialogueSettings.messageMaxWidth = line.substr(KEYWORDS.MESSAGE_MAX_WIDTH.length).trim();
             }
@@ -130,29 +166,72 @@ export class DialogueRenderer {
                 new Delimiter(this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.COMMENT)) {
-                const content = line.substr(KEYWORDS.COMMENT.length);
+                content = line.substr(KEYWORDS.COMMENT.length);
 
-                new Comment(content, this.dialogueSettings);
+                comment = new Comment(this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_LEFT)) {
-                const content = line.substr(KEYWORDS.MESSAGE_LEFT.length).trim();
+                content = line.substr(KEYWORDS.MESSAGE_LEFT.length).trim();
                 this.registerParticipant(this.dialogueSettings.leftParticipant.title);
 
-                new Message(content, SIDES.LEFT, this.dialogueSettings);
+                message = new Message(SIDES.LEFT, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_RIGHT)) {
-                const content = line.substr(KEYWORDS.MESSAGE_RIGHT.length).trim();
+                content = line.substr(KEYWORDS.MESSAGE_RIGHT.length).trim();
                 this.registerParticipant(this.dialogueSettings.rightParticipant.title);
 
-                new Message(content, SIDES.RIGHT, this.dialogueSettings);
+                message = new Message(SIDES.RIGHT, this.dialogueSettings);
             }
             else if (line.startsWith(KEYWORDS.MESSAGE_CENTER)) {
-                const content = line.substr(KEYWORDS.MESSAGE_CENTER.length).trim();
+                content = line.substr(KEYWORDS.MESSAGE_CENTER.length).trim();
                 this.registerParticipant(this.dialogueSettings.centerParticipant.title);
 
-                new Message(content, SIDES.CENTER, this.dialogueSettings);
+                message = new Message(SIDES.CENTER, this.dialogueSettings);
+            } else if (!this.dialogueSettings.clean) {
+                const unparsedEl = this.dialogueWrapperEl.createDiv({ cls: CLASSES.UNPARSED });
+                this.renderMarkdown(line, unparsedEl, false)
+            }
+
+            if (message != null) {
+                const msgEl = message.renderMessage();
+
+                if (message.titleShouldRender()) {
+                    const titleEl = message.renderTitle(
+                        msgEl, 
+                        this.dialogueSettings.renderMarkdownTitle ? undefined : message.participant.title
+                        );
+
+                        if (this.dialogueSettings.renderMarkdownTitle) {
+                            this.renderMarkdown(message.participant.title, titleEl)
+                        }
+                }
+
+                const contentEl = message.renderContent(
+                    msgEl,
+                    this.dialogueSettings.renderMarkdownContent ? undefined : content
+                    );
+
+                if (this.dialogueSettings.renderMarkdownContent) {
+                    this.renderMarkdown(content, contentEl)
+                }
+            }
+
+            if (comment != null) {
+                const cmtEl = comment.renderComment(
+                    this.dialogueSettings.renderMarkdownComment ? undefined : content
+                    );
+
+                if (this.dialogueSettings.renderMarkdownComment) {
+                    this.renderMarkdown(content, cmtEl)
+                }
             }
         }
+    }
+
+    renderMarkdown(content: string, el: HTMLElement, wrapper: boolean = true) {
+        const renderEl = wrapper ? el.createDiv({ cls: CLASSES.RENDER }) : el;
+
+        MarkdownPreviewView.renderMarkdown(content, renderEl, this.src, this.component)
     }
 
 }

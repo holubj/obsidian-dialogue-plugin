@@ -10,14 +10,19 @@ Parameters can be set using commands inside the dialogue. All available paramete
 
 ### Available parameters
 
-| Parameter          | Description                                                                   | Default Value |
-| ------------------ | ----------------------------------------------------------------------------- | ------------- |
-| `left:` or `l:`    | Name of the dialogue participant on the left side.                            | none          |
-| `right:` or `r:`   | Name of the dialogue participant on the right side.                           | none          |
-| `center:` or `c:`  | Name of the dialogue participant in the middle.                               | none          |
-| `titleMode:`       | Defines if and when to render titles. See available modes in the table below. | `first`       |
-| `messageMaxWidth:` | Defines the max message width in the dialogue.                                | `60%`         |
-| `commentMaxWidth:` | Defines the max comment width in the dialogue.                                | `60%`         |
+| Parameter                | Description                                                                   | Default Value |
+|--------------------------|-------------------------------------------------------------------------------|---------------|
+| `left:` or `l:`          | Name of the dialogue participant on the left side.                            | none          |
+| `right:` or `r:`         | Name of the dialogue participant on the right side.                           | none          |
+| `center:` or `c:`        | Name of the dialogue participant in the middle.                               | none          |
+| `titleMode:`             | Defines if and when to render titles. See available modes in the table below. | `first`       |
+| `messageMaxWidth:`       | Defines the max message width in the dialogue.                                | `60%`         |
+| `commentMaxWidth:`       | Defines the max comment width in the dialogue.                                | `60%`         |
+| `clean:`                 | Hide unparsable text.                                                         | `true`        |
+| `renderMarkdownTitle:`   | Render markdown in the title.                                                 | `true`        |
+| `renderMarkdownContent:` | Render markdown in the content.                                               | `true`        |
+| `renderMarkdownComment:` | Render markdown in the comment.                                               | `true`        |
+
 
 ### Title Modes
 

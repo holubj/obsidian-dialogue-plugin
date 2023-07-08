@@ -60,3 +60,8 @@
 	margin: 20px 0;
 	text-align: center;
 }
+
+.dialogue-plugin-render > *:first-child {
+	margin-top: 0;
+    margin-bottom: 0;
+}
