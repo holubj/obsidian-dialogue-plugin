@@ -8,7 +8,7 @@ import { Comment } from './components/comment';
 abstract class KEYWORDS {
     static readonly LEFT_PATTERN = /^l(?:eft)?(?:-(\d+))?:/i;
     static readonly RIGHT_PATTERN = /^r(?:ight)?(?:-(\d+))?:/i;
-    static readonly CENTER_PATTERN = /^c(?:center)?(?:-(\d+))?:/i;
+    static readonly CENTER_PATTERN = /^c(?:enter)?(?:-(\d+))?:/i;
     static readonly TITLE_MODE = 'titleMode:';
     static readonly MESSAGE_MAX_WIDTH = 'messageMaxWidth:';
     static readonly COMMENT_MAX_WIDTH = 'commentMaxWidth:';
@@ -150,7 +150,7 @@ export class DialogueRenderer {
                 const content = line.substr(KEYWORDS.MESSAGE_CENTER.length).trim();
                 this.registerParticipant(this.dialogueSettings.centerParticipant.title);
 
-                new Message(content, SIDES.RIGHT, this.dialogueSettings);
+                new Message(content, SIDES.CENTER, this.dialogueSettings);
             }
         }
     }
